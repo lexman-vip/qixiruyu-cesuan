@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>柒禧如寓收房测算</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        *{margin:0;padding:0;-webkit-tap-highlight-color:transparent;touch-action:manipulation;box-sizing:border-box}
+        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans SC',sans-serif;background:linear-gradient(160deg,#5b6bc0 0%,#7c4fd1 50%,#9b59b6 100%);min-height:100vh;padding-bottom:70px}
+
+        /* 顶部标题更精致 */
+        .header{text-align:center;padding:14px 16px 8px;color:white}
+        .header .brand{font-size:20px;font-weight:700;letter-spacing:2px}
+        .header .sub{font-size:12px;opacity:0.75;margin-top:2px;font-weight:300}
+
+        /* 面板更紧凑 */
+        .panel{background:rgba(255,255,255,0.97);border-radius:14px;padding:14px 14px 10px;margin:8px 12px;box-shadow:0 2px 12px rgba(0,0,0,0.08)}
+        .panel-title{font-size:15px;font-weight:700;color:#2d3748;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+        .panel-title .icon{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px}
+
+        /* 输入项更紧凑 */
+        .input-wrap{margin-bottom:10px}
+        .input-wrap label{display:block;font-size:13px;font-weight:600;color:#4a5568;margin-bottom:3px}
+        .input-wrap input,.input-wrap select{width:100%;padding:10px 12px;font-size:15px;border:1.5px solid #e2e8f0;border-radius:8px;background:#fff;transition:all 0.2s}
+        .input-wrap input:focus,.input-wrap select:focus{border-color:#667eea;box-shadow:0 0 0 3px rgba(102,126,234,0.12);outline:none}
+        .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+
+        /* 标签样式 */
+        .tag{display:inline-block;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:600;margin-left:6px;vertical-align:middle}
+        .t-year{background:#dbeafe;color:#1e40af}
+        .t-half{background:#d1fae5;color:#065f46}
+        .t-quarter{background:#fef3c7;color:#92400e}
+        .t-month{background:#fce7f3;color:#be185d}
+
+        /* 房间竖排更紧凑 */
+        .room-list{display:flex;flex-direction:column;gap:8px}
+        .room-item{display:flex;align-items:center;gap:8px;background:#f7fafc;padding:8px 10px;border-radius:8px;border:1px solid #edf2f7}
+        .room-item label{font-size:13px;font-weight:600;color:#4a5568;white-space:nowrap;min-width:44px}
+        .room-item input{flex:1;padding:8px;font-size:14px;border:1.5px solid #e2e8f0;border-radius:6px;text-align:center}
+        .room-item input:focus{border-color:#667eea;outline:none}
+        .room-item .unit{font-size:11px;color:#a0aec0;white-space:nowrap}
+
+        /* 按钮 */
+        .btn-main{background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;padding:12px;font-size:15px;font-weight:600;border-radius:10px;width:calc(100% - 24px);margin:8px 12px;box-shadow:0 4px 12px rgba(102,126,234,0.3);transition:all 0.2s}
+        .btn-main:active{transform:scale(0.98)}
+        .btn-sub{background:#edf2f7;border:none;padding:11px;font-size:14px;font-weight:600;border-radius:10px;width:calc(100% - 24px);margin:0 12px;color:#4a5568;transition:all 0.2s}
+        .btn-sub:active{background:#e2e8f0}
+
+        /* 指标卡片 - 更精致 */
+        .metric-grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 12px}
+        .metric-card{background:rgba(255,255,255,0.97);border-radius:12px;padding:12px 8px;text-align:left;box-shadow:0 2px 8px rgba(0,0,0,0.06);transition:all 0.2s}
+        .metric-card:active{transform:scale(0.98)}
+        .metric-card .lbl{font-size:11px;color:#718096;margin-bottom:4px;font-weight:500}
+        .metric-card .val{font-size:20px;font-weight:700;line-height:1.2}
+        .metric-card .sub{font-size:10px;color:#a0aec0;margin-top:3px;line-height:1.3}
+        .mc-blue .val{color:#4f46e5}
+        .mc-green .val{color:#059669}
+        .mc-purple .val{color:#7c3aed}
+        .mc-orange .val{color:#ea580c}
+        .mc-teal .val{color:#0d9488}
+        .mc-indigo .val{color:#4f46e5}
+
+        /* verdict卡片 - 更高级 */
+        .verdict-box{border-radius:14px;padding:16px 18px;margin:8px 12px;color:white;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 16px rgba(0,0,0,0.15)}
+        .verdict-left{display:flex;align-items:center;gap:10px}
+        .verdict-icon{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;backdrop-filter:blur(4px)}
+        .verdict-title{font-size:17px;font-weight:700}
+        .verdict-desc{font-size:12px;opacity:0.85;margin-top:2px;line-height:1.4;max-width:180px}
+        .verdict-right{text-align:right}
+        .verdict-right .label{font-size:11px;opacity:0.8}
+        .verdict-right .num{font-size:28px;font-weight:700;line-height:1.1}
+        .verdict-right .num span{font-size:13px;font-weight:500}
+        .verdict-right .target{font-size:10px;opacity:0.7;margin-top:2px}
+        .v-go{background:linear-gradient(135deg,#10b981,#059669)}
+        .v-warn{background:linear-gradient(135deg,#f59e0b,#d97706)}
+        .v-stop{background:linear-gradient(135deg,#ef4444,#dc2626)}
+
+        /* 导航 */
+        .nav{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,0.98);border-top:1px solid #e2e8f0;display:flex;padding:6px 0;z-index:100;backdrop-filter:blur(10px)}
+        .nav-btn{flex:1;text-align:center;font-size:11px;font-weight:600;color:#a0aec0;border:none;background:none;padding:4px 0;transition:all 0.2s}
+        .nav-btn.active{color:#667eea}
+        .nav-btn .emoji{font-size:18px;display:block;margin-bottom:1px}
+
+        /* 页面 */
+        .section{display:none;padding:0 0 12px;min-height:calc(100vh - 70px)}
+        .section.active{display:block}
+
+        /* 图表折叠 */
+        .toggle{background:#edf2f7;border:none;padding:10px 14px;border-radius:10px;font-size:13px;font-weight:600;width:calc(100% - 24px);margin:8px 12px;display:flex;justify-content:space-between;align-items:center;color:#4a5568}
+        .chart-box{background:rgba(255,255,255,0.97);border-radius:12px;padding:10px;margin:8px 12px;display:none;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+        .chart-box.show{display:block}
+
+        /* 明细表 */
+        .detail-table{width:100%;font-size:11px;border-collapse:collapse}
+        .detail-table th,.detail-table td{padding:7px 4px;text-align:right;border-bottom:1px solid #edf2f7}
+        .detail-table th{background:#f7fafc;font-weight:600;position:sticky;top:0;font-size:10px;color:#4a5568}
+        .detail-table td:first-child,.detail-table th:first-child,.detail-table td:nth-child(2),.detail-table th:nth-child(2){text-align:left}
+        .scroll-detail{max-height:70vh;overflow-y:auto;border-radius:10px;background:white;margin:0 12px}
+        .badge{font-size:9px;padding:2px 5px;border-radius:8px;font-weight:600;white-space:nowrap}
+        .s-装修{background:#fee2e2;color:#991b1b}
+        .s-空期{background:#dbeafe;color:#1e40af}
+        .s-首年{background:#fef3c7;color:#92400e}
+        .s-半年{background:#fef3c7;color:#92400e}
+        .s-季度{background:#fef3c7;color:#92400e}
+        .s-年度{background:#fef3c7;color:#92400e}
+        .s-稳定{background:#d1fae5;color:#065f46}
+        .pos{color:#059669;font-weight:600}
+        .neg{color:#dc2626;font-weight:600}
+
+        /* 密码页 */
+        .pw-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:linear-gradient(160deg,#5b6bc0 0%,#7c4fd1 50%,#9b59b6 100%);z-index:1000;display:flex;align-items:center;justify-content:center}
+        .pw-box{background:rgba(255,255,255,0.98);border-radius:16px;padding:32px 24px;width:85%;max-width:300px;text-align:center;box-shadow:0 20px 40px rgba(0,0,0,0.2)}
+        .pw-input{width:100%;padding:12px;font-size:18px;text-align:center;letter-spacing:8px;border:2px solid #e2e8f0;border-radius:10px;margin:16px 0 12px;box-sizing:border-box;font-weight:600}
+        .pw-btn{width:100%;padding:12px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:10px;font-size:15px;font-weight:600;box-shadow:0 4px 12px rgba(102,126,234,0.3)}
+        .pw-err{color:#dc2626;font-size:12px;margin-top:8px;display:none;font-weight:500}
+
+        /* 减少整体间距 */
+        .compact-section .panel{margin:6px 12px;padding:12px 14px 8px}
+    </style>
+</head>
+<body>
+<div id="pwOverlay" class="pw-overlay">
+    <div class="pw-box">
+        <div style="font-size:36px;margin-bottom:4px">🏠</div>
+        <div style="font-size:18px;font-weight:700;color:#2d3748">柒禧如寓</div>
+        <div style="font-size:12px;color:#a0aec0;margin-top:4px">收房测算工具</div>
+        <input type="password" id="pwInput" class="pw-input" placeholder="输入密码" maxlength="8">
+        <button class="pw-btn" onclick="checkPw()">进入系统</button>
+        <div id="pwErr" class="pw-err">密码错误，请重试</div>
+    </div>
+</div>
+
+<div id="mainBox" style="display:none">
+    <div class="header">
+        <div class="brand">🏠 柒禧如寓</div>
+        <div class="sub">收房测算工具</div>
+    </div>
+
+    <!-- 输入页 -->
+    <div id="sec-input" class="section active compact-section">
+        <div class="panel">
+            <div class="panel-title">
+                <span class="icon" style="background:#e0e7ff;color:#4f46e5">⚙️</span>
+                基础参数
+            </div>
+            <div class="input-wrap"><label>获客成本 (元)</label><input type="number" id="acquire" value="2000"></div>
+            <div class="input-wrap"><label>装修成本 (元)</label><input type="number" id="renovate" value="50000"></div>
+            <div class="input-wrap"><label>房东年租金 (元/年)</label><input type="number" id="landlordYear" value="5000"></div>
+            <div class="input-wrap">
+                <label>房东付款 <span id="ltag" class="tag t-year">年付</span></label>
+                <select id="landlordPay"><option value="year">年付</option><option value="half">半年付</option></select>
+            </div>
+            <div class="grid2">
+                <div class="input-wrap"><label>合同期(月)</label><input type="number" id="contract" value="72"></div>
+                <div class="input-wrap"><label>空房期(月)</label><input type="number" id="vacancy" value="10"></div>
+            </div>
+            <div class="grid2">
+                <div class="input-wrap"><label>装修月数</label><input type="number" id="renovateM" value="2"></div>
+                <div class="input-wrap"><label>房间数量</label><input type="number" id="rooms" value="2" min="1" max="8"></div>
+            </div>
+        </div>
+        <div class="panel">
+            <div class="panel-title">
+                <span class="icon" style="background:#d1fae5;color:#059669">💰</span>
+                房间租金
+            </div>
+            <div class="input-wrap">
+                <label>租客付款 <span id="ttag" class="tag t-month">月付</span></label>
+                <select id="tenantPay"><option value="month">月付</option><option value="quarter">季度付</option><option value="half">半年付</option><option value="year">年付</option></select>
+            </div>
+            <div id="roomBox" class="room-list"></div>
+        </div>
+        <button class="btn-main" onclick="calc();show('result')">📊 开始测算</button>
+    </div>
+
+    <!-- 结果页 -->
+    <div id="sec-result" class="section">
+        <div class="metric-grid3">
+            <div class="metric-card mc-blue">
+                <div class="lbl">总投入</div>
+                <div class="val" id="m1">-</div>
+                <div class="sub">装修+获客+房东</div>
+            </div>
+            <div class="metric-card mc-indigo">
+                <div class="lbl">合同总收入</div>
+                <div class="val" id="m2">-</div>
+                <div class="sub">房间租金×月数</div>
+            </div>
+            <div class="metric-card mc-green">
+                <div class="lbl">合同总利润</div>
+                <div class="val" id="m3">-</div>
+                <div class="sub">收入-支出</div>
+            </div>
+            <div class="metric-card mc-purple">
+                <div class="lbl">每间差价</div>
+                <div class="val" id="m4">-</div>
+                <div class="sub">利润÷间÷月</div>
+            </div>
+            <div class="metric-card mc-orange">
+                <div class="lbl">毛利率</div>
+                <div class="val" id="m5">-</div>
+                <div class="sub">利润÷收入≥45%</div>
+            </div>
+            <div class="metric-card mc-teal">
+                <div class="lbl">回本周期</div>
+                <div class="val" id="m6">-</div>
+                <div class="sub">目标≤30月</div>
+            </div>
+        </div>
+
+        <div id="verdictBox" class="verdict-box v-go">
+            <div class="verdict-left">
+                <div class="verdict-icon">✓</div>
+                <div>
+                    <div class="verdict-title">建议拿房</div>
+                    <div class="verdict-desc">回本周期与毛利率两项全部达标</div>
+                </div>
+            </div>
+            <div class="verdict-right">
+                <div class="label">回本周期</div>
+                <div class="num">29<span>月</span></div>
+                <div class="target">目标≤30月</div>
+            </div>
+        </div>
+
+        <button class="toggle" onclick="togChart()">
+            <span>📈 现金流趋势图</span>
+            <span id="arr">▼</span>
+        </button>
+        <div id="chartBox" class="chart-box"><div style="height:200px"><canvas id="chart"></canvas></div></div>
+        <button class="btn-sub" onclick="show('detail')">📋 查看明细</button>
+    </div>
+
+    <!-- 明细页 -->
+    <div id="sec-detail" class="section">
+        <div class="panel" style="padding:10px 12px;margin:8px 12px">
+            <div class="panel-title">
+                <span class="icon" style="background:#dbeafe;color:#1e40af">📋</span>
+                现金流明细
+            </div>
+        </div>
+        <div class="scroll-detail">
+            <table class="detail-table">
+                <thead><tr><th>阶段</th><th>月</th><th>装修</th><th>获客</th><th>房东</th><th>租客</th><th>净流</th><th>累计</th></tr></thead>
+                <tbody id="tb"></tbody>
+                <tfoot style="background:#f7fafc;font-weight:600">
+                    <tr><td colspan="2" style="text-align:right">合计</td><td id="s1" class="neg">-</td><td id="s2" class="neg">-</td><td id="s3" class="neg">-</td><td id="s4" class="pos">-</td><td id="s6" style="color:#4f46e5">-</td><td id="s7" style="color:#3b82f6">-</td></tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+    <div class="nav">
+        <button class="nav-btn active" onclick="show('input')">
+            <span class="emoji">🏠</span>输入
+        </button>
+        <button class="nav-btn" onclick="show('result')">
+            <span class="emoji">📊</span>结果
+        </button>
+        <button class="nav-btn" onclick="show('detail')">
+            <span class="emoji">📋</span>明细
+        </button>
+    </div>
+</div>
+
+<script>
+// ========== 所有数据公式逻辑完全不动，已最终定稿 ==========
+const CORRECT_PASSWORD = 'qxry888';
+const DEFAULT_RENTS = [1200, 1000, 1000, 1000, 1000, 1000, 1000, 1000];
+let chart = null;
+
+function checkPw(){
+    const input = document.getElementById('pwInput').value;
+    if(input === CORRECT_PASSWORD){
+        document.getElementById('pwOverlay').style.display = 'none';
+        document.getElementById('mainBox').style.display = 'block';
+    } else {
+        document.getElementById('pwErr').style.display = 'block';
+        document.getElementById('pwInput').value = '';
+    }
+}
+document.getElementById('pwInput').addEventListener('keypress', function(e){ if(e.key === 'Enter') checkPw(); });
+
+function fmt(n){return Math.round(n).toLocaleString('zh-CN')}
+function fmtM(n){return(n/10000).toFixed(1)+'万'}
+function pct(n){return n.toFixed(1)+'%'}
+
+function show(id){
+    document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+    document.getElementById('sec-'+id).classList.add('active');
+    const navBtns = document.querySelectorAll('.nav-btn');
+    const idx = ['input','result','detail'].indexOf(id);
+    if(idx >= 0) navBtns[idx].classList.add('active');
+    if(chart) chart.resize();
+}
+
+function togChart(){
+    document.getElementById('chartBox').classList.toggle('show');
+    document.getElementById('arr').textContent = document.getElementById('chartBox').classList.contains('show') ? '▲' : '▼';
+    if(chart) chart.resize();
+}
+
+document.getElementById('landlordPay').addEventListener('change', function(){
+    const t = document.getElementById('ltag');
+    const m = {year: ['年付', 't-year'], half: ['半年付', 't-half']};
+    t.textContent = m[this.value][0]; t.className = 'tag ' + m[this.value][1]; calc();
+});
+document.getElementById('tenantPay').addEventListener('change', function(){
+    const t = document.getElementById('ttag');
+    const m = {month: ['月付', 't-month'], quarter: ['季度付', 't-quarter'], half: ['半年付', 't-half'], year: ['年付', 't-year']};
+    t.textContent = m[this.value][0]; t.className = 'tag ' + m[this.value][1]; calc();
+});
+
+function renderRooms(){
+    const r = parseInt(document.getElementById('rooms').value) || 1;
+    const box = document.getElementById('roomBox');
+    let h = '';
+    for(let i = 1; i <= r; i++){
+        h += `<div class="room-item"><label>房间${i}</label><input type="number" class="rr" data-i="${i}" value="${DEFAULT_RENTS[i-1] || 1000}"><span class="unit">元/月</span></div>`;
+    }
+    box.innerHTML = h;
+    document.querySelectorAll('.rr').forEach(i => i.addEventListener('input', calc));
+}
+
+function getData(){
+    return {
+        a: document.getElementById('acquire').value,
+        r: document.getElementById('renovate').value,
+        ly: document.getElementById('landlordYear').value,
+        c: document.getElementById('contract').value,
+        v: document.getElementById('vacancy').value,
+        rm: document.getElementById('renovateM').value,
+        rooms: document.getElementById('rooms').value,
+        lp: document.getElementById('landlordPay').value,
+        tp: document.getElementById('tenantPay').value
+    };
+}
+function getR(){
+    return Array.from(document.querySelectorAll('.rr')).map(i => parseFloat(i.value) || 0);
+}
+
+function isLandlordPay(m, v, method){
+    if(m <= v) return false;
+    const cm = m - v;
+    if(method === 'year') return cm === 1 || (cm - 1) % 12 === 0;
+    if(method === 'half') return cm === 1 || (cm - 1) % 6 === 0;
+    return false;
+}
+
+function getTenantPay(m, renovateM, v, contract, tm, method){
+    if(m <= renovateM || m > v + contract) return 0;
+    const n = m - renovateM;
+    if(method === 'month') return tm;
+    let cycle = method === 'quarter' ? 3 : method === 'half' ? 6 : 12;
+    if(n === 1 || (n - 1) % cycle === 0){
+        const remaining = (v + contract) - m + 1;
+        if(remaining < cycle) return tm * remaining;
+        return tm * cycle;
+    }
+    return 0;
+}
+
+function getStage(m, v, rm, lp, tp, contract){
+    if(m === 0 || m <= rm) return '装修';
+    if(m <= v) return '空期';
+    const cm = m - v;
+    if(isLandlordPay(m, v, lp)){
+        if(cm === 1) return '首年';
+        if(lp === 'half') return '半年';
+        return '年度';
+    }
+    const n = m - rm;
+    if(tp === 'month') return '稳定';
+    let cycle = tp === 'quarter' ? 3 : tp === 'half' ? 6 : 12;
+    if(n === 1 || (n - 1) % cycle === 0){
+        const remaining = (v + contract) - m + 1;
+        if(remaining < cycle) return '稳定';
+        if(tp === 'quarter') return '季度';
+        if(tp === 'half') return '半年';
+        if(tp === 'year') return '年度';
+    }
+    return '稳定';
+}
+
+function calc(){
+    const d = getData(), rs = getR();
+    const a = +d.a || 0, r = +d.r || 0, ly = +d.ly || 0, c = +d.c || 72, v = +d.v || 10, rm = +d.rm || 2;
+    const lp = d.lp || 'year', tp = d.tp || 'month';
+    const tm = rs.slice(0, +d.rooms || 1).reduce((x, y) => x + (+y || 0), 0);
+    const cy = c / 12;
+
+    const ci = tm * c;
+    const cp = ci - (ly * cy) - a - r;
+    const gm = ci > 0 ? (cp / ci * 100) : 0;
+
+    const cf = [];
+    let cum = 0, tr = 0, ta = 0, tl = 0, tt = 0;
+    let recoverMonth = -1;
+
+    for(let m = 0; m <= v + c; m++){
+        let rv = 0, ac = 0, ld = 0, tn = 0;
+        if(m === 0){ rv = -r; ac = -a; }
+        if(isLandlordPay(m, v, lp)){ if(lp === 'year') ld = -ly; else ld = -ly / 2; }
+        tn = getTenantPay(m, rm, v, c, tm, tp);
+
+        const st = getStage(m, v, rm, lp, tp, c);
+        const nt = rv + ac + ld + tn;
+        cum += nt;
+
+        if(recoverMonth === -1 && cum >= 0 && m > 0){ recoverMonth = m; }
+
+        tr += rv; ta += ac; tl += ld; tt += tn;
+        cf.push({m, st, rv, ac, ld, tn, nt, cum});
+    }
+
+    const recR = recoverMonth > 0 ? recoverMonth : 9999;
+    const ti = r + a + ly * cy;
+    const pr = recR <= 30, pm = gm >= 45;
+    let vc, vi2, vt, vd;
+    if(pr && pm){ vc = 'v-go'; vi2 = '✓'; vt = '建议拿房'; vd = '回本周期与毛利率两项全部达标'; }
+    else if(pr || pm){ vc = 'v-warn'; vi2 = '!'; vt = '谨慎评估'; vd = (!pr ? '回本周期超标 ' : '') + (!pm ? '毛利率不足' : '') + '，建议重新谈判参数'; }
+    else{ vc = 'v-stop'; vi2 = '✗'; vt = '不建议拿房'; vd = '回本周期与毛利率均未达标，建议放弃或重谈'; }
+
+    const verdictBox = document.getElementById('verdictBox');
+    verdictBox.className = 'verdict-box ' + vc;
+    verdictBox.innerHTML = `
+        <div class="verdict-left">
+            <div class="verdict-icon">${vi2}</div>
+            <div>
+                <div class="verdict-title">${vt}</div>
+                <div class="verdict-desc">${vd}</div>
+            </div>
+        </div>
+        <div class="verdict-right">
+            <div class="label">回本周期</div>
+            <div class="num">${recR === 9999 ? '无法回本' : recR}<span>月</span></div>
+            <div class="target">目标≤30月</div>
+        </div>
+    `;
+
+    document.getElementById('m1').textContent = fmtM(ti);
+    document.getElementById('m2').textContent = fmtM(ci);
+    document.getElementById('m3').textContent = fmtM(cp);
+    document.getElementById('m4').textContent = '¥' + fmt((+d.rooms || 1) > 0 && c > 0 ? cp / (+d.rooms || 1) / c : 0);
+    document.getElementById('m5').textContent = pct(gm);
+    document.getElementById('m6').textContent = recR === 9999 ? '无法回本' : recR + '月';
+
+    document.getElementById('tb').innerHTML = cf.map(r => `<tr><td><span class="badge s-${r.st}">${r.st}</span></td><td>${r.m}</td><td class="${r.rv < 0 ? 'neg' : ''}">${r.rv ? fmt(r.rv) : '-'}</td><td class="${r.ac < 0 ? 'neg' : ''}">${r.ac ? fmt(r.ac) : '-'}</td><td class="${r.ld < 0 ? 'neg' : ''}">${r.ld ? fmt(r.ld) : '-'}</td><td class="${r.tn > 0 ? 'pos' : ''}">${r.tn ? fmt(r.tn) : '-'}</td><td class="${r.nt >= 0 ? 'pos' : 'neg'}">${r.nt >= 0 ? '+' : ''}${fmt(r.nt)}</td><td class="${r.cum >= 0 ? 'pos' : 'neg'}">${r.cum >= 0 ? '+' : ''}${fmt(r.cum)}</td></tr>`).join('');
+
+    document.getElementById('s1').textContent = fmt(tr);
+    document.getElementById('s2').textContent = fmt(ta);
+    document.getElementById('s3').textContent = fmt(tl);
+    document.getElementById('s4').textContent = fmt(tt);
+    document.getElementById('s6').textContent = fmt(cp);
+    document.getElementById('s7').textContent = fmt(cf[cf.length-1].cum);
+
+    drawChart(cf);
+}
+
+function drawChart(cf){
+    const ctx = document.getElementById('chart').getContext('2d');
+    if(chart) chart.destroy();
+    const lab = cf.map(c => c.m), cum = cf.map(c => c.cum), net = cf.map(c => c.nt);
+    const recoverIndex = cf.findIndex(c => c.cum >= 0);
+    chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: lab,
+            datasets: [
+                {label: '累计现金流', data: cum, borderColor: '#667eea', backgroundColor: 'rgba(102,126,234,0.1)', fill: true, tension: 0.3, pointRadius: (ctx) => { const i=ctx.dataIndex; return i===0||i===recoverIndex||i===cf.length-1?5:0; }, pointHoverRadius: 6, pointBackgroundColor: (ctx) => { const i=ctx.dataIndex; if(i===0)return'#ef4444'; if(i===recoverIndex)return'#10b981'; return'#667eea'; }},
+                {label: '当月净流', data: net, borderColor: '#10b981', backgroundColor: 'transparent', fill: false, tension: 0.1, pointRadius: 0, pointHoverRadius: 3, borderWidth: 2, borderDash: [5, 5], yAxisID: 'y1'}
+            ]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: {legend: {display: true, labels: {usePointStyle: true, font: {size: 11}}}},
+            scales: {
+                x: {grid: {display: false}, ticks: {maxTicksLimit: 8, font: {size: 10}}},
+                y: {position: 'left', ticks: {callback: v => '¥' + (v / 10000).toFixed(1) + '万', font: {size: 10}}, grid: {color: 'rgba(102,126,234,0.1)'}},
+                y1: {position: 'right', ticks: {callback: v => '¥' + (v / 1000).toFixed(0) + 'k', font: {size: 10}}, grid: {drawOnChartArea: false}}
+            }
+        }
+    });
+}
+
+['acquire', 'renovate', 'landlordYear', 'contract', 'vacancy', 'renovateM', 'rooms'].forEach(id => {
+    document.getElementById(id).addEventListener('input', () => { if(id === 'rooms') renderRooms(); calc(); });
+});
+
+renderRooms();
+calc();
+</script>
+</body>
+</html>
