@@ -50,11 +50,11 @@
 
         /* 指标卡片 - 更精致 */
         .metric-grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 12px}
-        .metric-card{background:rgba(255,255,255,0.97);border-radius:12px;padding:12px 8px;text-align:left;box-shadow:0 2px 8px rgba(0,0,0,0.06);transition:all 0.2s}
+        .metric-card{background:rgba(255,255,255,0.97);border-radius:12px;padding:14px 8px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.06);transition:all 0.2s}
         .metric-card:active{transform:scale(0.98)}
-        .metric-card .lbl{font-size:11px;color:#718096;margin-bottom:4px;font-weight:500}
+        .metric-card .lbl{font-size:11px;color:#718096;margin-bottom:6px;font-weight:500}
         .metric-card .val{font-size:20px;font-weight:700;line-height:1.2}
-        .metric-card .sub{font-size:10px;color:#a0aec0;margin-top:3px;line-height:1.3}
+        .metric-card .sub{font-size:10px;color:#a0aec0;margin-top:4px;line-height:1.3}
         .mc-blue .val{color:#4f46e5}
         .mc-green .val{color:#059669}
         .mc-purple .val{color:#7c3aed}
@@ -67,7 +67,7 @@
         .verdict-left{display:flex;align-items:center;gap:10px}
         .verdict-icon{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;backdrop-filter:blur(4px)}
         .verdict-title{font-size:17px;font-weight:700}
-        .verdict-desc{font-size:12px;opacity:0.85;margin-top:2px;line-height:1.4;max-width:180px}
+        .verdict-desc{font-size:11px;opacity:0.85;margin-top:2px;line-height:1.3;white-space:nowrap}
         .verdict-right{text-align:right}
         .verdict-right .label{font-size:11px;opacity:0.8}
         .verdict-right .num{font-size:28px;font-weight:700;line-height:1.1}
@@ -94,10 +94,13 @@
 
         /* 明细表 */
         .detail-table{width:100%;font-size:11px;border-collapse:collapse}
-        .detail-table th,.detail-table td{padding:7px 4px;text-align:right;border-bottom:1px solid #edf2f7}
+        .detail-table th,.detail-table td{padding:7px 3px;text-align:right;border-bottom:1px solid #edf2f7;white-space:nowrap}
         .detail-table th{background:#f7fafc;font-weight:600;position:sticky;top:0;font-size:10px;color:#4a5568}
-        .detail-table td:first-child,.detail-table th:first-child,.detail-table td:nth-child(2),.detail-table th:nth-child(2){text-align:left}
-        .scroll-detail{max-height:70vh;overflow-y:auto;border-radius:10px;background:white;margin:0 12px}
+        .detail-table td:first-child,.detail-table th:first-child{text-align:left}
+        .detail-table td:nth-child(2),.detail-table th:nth-child(2){text-align:left}
+        .scroll-detail{max-height:68vh;overflow-y:auto;border-radius:10px;background:white;margin:0 12px;-webkit-overflow-scrolling:touch}
+        .scroll-detail::-webkit-scrollbar{height:4px}
+        .scroll-detail::-webkit-scrollbar-thumb{background:#c1c1c1;border-radius:2px}
         .badge{font-size:9px;padding:2px 5px;border-radius:8px;font-weight:600;white-space:nowrap}
         .s-装修{background:#fee2e2;color:#991b1b}
         .s-空期{background:#dbeafe;color:#1e40af}
@@ -139,8 +142,9 @@
         <div class="sub">收房测算工具</div>
     </div>
 
-    <!-- 输入页 -->
-    <div id="sec-input" class="section active compact-section">
+    <!-- 测算页（输入+结果合并） -->
+    <div id="sec-main" class="section active compact-section">
+        <!-- 输入区域 -->
         <div class="panel">
             <div class="panel-title">
                 <span class="icon" style="background:#e0e7ff;color:#4f46e5">⚙️</span>
@@ -173,11 +177,8 @@
             </div>
             <div id="roomBox" class="room-list"></div>
         </div>
-        <button class="btn-main" onclick="calc();show('result')">📊 开始测算</button>
-    </div>
 
-    <!-- 结果页 -->
-    <div id="sec-result" class="section">
+        <!-- 结果区域 -->
         <div class="metric-grid3">
             <div class="metric-card mc-blue">
                 <div class="lbl">总投入</div>
@@ -231,11 +232,14 @@
             <span id="arr">▼</span>
         </button>
         <div id="chartBox" class="chart-box"><div style="height:200px"><canvas id="chart"></canvas></div></div>
-        <button class="btn-sub" onclick="show('detail')">📋 查看明细</button>
+    </div>
+
+    <!-- 结果页占位（已合并到main，保留空div避免JS报错） -->
+    <div id="sec-result" class="section" style="display:none">
     </div>
 
     <!-- 明细页 -->
-    <div id="sec-detail" class="section">
+    <div id="sec-detail" class="section" style="padding-top:20px">
         <div class="panel" style="padding:10px 12px;margin:8px 12px">
             <div class="panel-title">
                 <span class="icon" style="background:#dbeafe;color:#1e40af">📋</span>
@@ -254,11 +258,8 @@
     </div>
 
     <div class="nav">
-        <button class="nav-btn active" onclick="show('input')">
-            <span class="emoji">🏠</span>输入
-        </button>
-        <button class="nav-btn" onclick="show('result')">
-            <span class="emoji">📊</span>结果
+        <button class="nav-btn active" onclick="show('main')">
+            <span class="emoji">🏠</span>测算
         </button>
         <button class="nav-btn" onclick="show('detail')">
             <span class="emoji">📋</span>明细
@@ -293,7 +294,7 @@ function show(id){
     document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
     document.getElementById('sec-'+id).classList.add('active');
     const navBtns = document.querySelectorAll('.nav-btn');
-    const idx = ['input','result','detail'].indexOf(id);
+    const idx = ['main','detail'].indexOf(id);
     if(idx >= 0) navBtns[idx].classList.add('active');
     if(chart) chart.resize();
 }
