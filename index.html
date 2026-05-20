@@ -8,61 +8,47 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         *{margin:0;padding:0;-webkit-tap-highlight-color:transparent;touch-action:manipulation;box-sizing:border-box}
-        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans SC',sans-serif;background:linear-gradient(160deg,#5b6bc0 0%,#7c4fd1 50%,#9b59b6 100%);min-height:100vh;padding-bottom:70px}
+        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans SC',sans-serif;background:#F5F0E8;min-height:100vh;padding-bottom:70px}
 
-        /* 顶部标题更精致 */
-        .header{text-align:center;padding:14px 16px 8px;color:white}
-        .header .brand{font-size:20px;font-weight:700;letter-spacing:2px}
-        .header .sub{font-size:12px;opacity:0.75;margin-top:2px;font-weight:300}
+        .header{text-align:center;padding:14px 16px 8px;color:#2d3748}
+        .header .brand{font-size:20px;font-weight:700;letter-spacing:2px;color:#DC530F}
+        .header .sub{font-size:12px;color:#a0aec0;margin-top:2px;font-weight:300}
 
-        /* 面板更紧凑 */
-        .panel{background:rgba(255,255,255,0.97);border-radius:14px;padding:14px 14px 10px;margin:8px 12px;box-shadow:0 2px 12px rgba(0,0,0,0.08)}
+        .panel{background:#FFFFFF;border-radius:14px;padding:14px 14px 10px;margin:8px 12px;box-shadow:0 2px 12px rgba(0,0,0,0.06)}
         .panel-title{font-size:15px;font-weight:700;color:#2d3748;margin-bottom:10px;display:flex;align-items:center;gap:6px}
-        .panel-title .icon{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px}
+        .panel-title .icon{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;background:#F5F0E8;color:#DC530F;border:1.5px solid #DC530F}
 
-        /* 输入项更紧凑 */
         .input-wrap{margin-bottom:10px}
         .input-wrap label{display:block;font-size:13px;font-weight:600;color:#4a5568;margin-bottom:3px}
         .input-wrap input,.input-wrap select{width:100%;padding:10px 12px;font-size:15px;border:1.5px solid #e2e8f0;border-radius:8px;background:#fff;transition:all 0.2s}
-        .input-wrap input:focus,.input-wrap select:focus{border-color:#667eea;box-shadow:0 0 0 3px rgba(102,126,234,0.12);outline:none}
+        .input-wrap input:focus,.input-wrap select:focus{border-color:#DC530F;box-shadow:0 0 0 3px rgba(220,83,15,0.12);outline:none}
         .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 
-        /* 标签样式 */
         .tag{display:inline-block;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:600;margin-left:6px;vertical-align:middle}
-        .t-year{background:#dbeafe;color:#1e40af}
-        .t-half{background:#d1fae5;color:#065f46}
-        .t-quarter{background:#fef3c7;color:#92400e}
-        .t-month{background:#fce7f3;color:#be185d}
+        .t-year{background:#F5F0E8;color:#DC530F}
+        .t-half{background:#F5F0E8;color:#DC530F}
+        .t-quarter{background:#F5F0E8;color:#DC530F}
+        .t-month{background:#F5F0E8;color:#DC530F}
 
-        /* 房间竖排更紧凑 */
         .room-list{display:flex;flex-direction:column;gap:8px}
-        .room-item{display:flex;align-items:center;gap:8px;background:#f7fafc;padding:8px 10px;border-radius:8px;border:1px solid #edf2f7}
+        .room-item{display:flex;align-items:center;gap:8px;background:#FFFFFF;padding:8px 10px;border-radius:10px;border:1.5px solid #F5F0E8}
         .room-item label{font-size:13px;font-weight:600;color:#4a5568;white-space:nowrap;min-width:44px}
         .room-item input{flex:1;padding:8px;font-size:14px;border:1.5px solid #e2e8f0;border-radius:6px;text-align:center}
-        .room-item input:focus{border-color:#667eea;outline:none}
+        .room-item input:focus{border-color:#DC530F;outline:none}
         .room-item .unit{font-size:11px;color:#a0aec0;white-space:nowrap}
 
-        /* 按钮 */
-        .btn-main{background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;padding:12px;font-size:15px;font-weight:600;border-radius:10px;width:calc(100% - 24px);margin:8px 12px;box-shadow:0 4px 12px rgba(102,126,234,0.3);transition:all 0.2s}
-        .btn-main:active{transform:scale(0.98)}
-        .btn-sub{background:#edf2f7;border:none;padding:11px;font-size:14px;font-weight:600;border-radius:10px;width:calc(100% - 24px);margin:0 12px;color:#4a5568;transition:all 0.2s}
-        .btn-sub:active{background:#e2e8f0}
-
-        /* 指标卡片 - 更精致 */
-        .metric-grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:8px 12px}
-        .metric-card{background:rgba(255,255,255,0.97);border-radius:12px;padding:14px 8px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.06);transition:all 0.2s}
+        .metric-grid3{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:8px 12px}
+        .metric-card{background:#FFFFFF;border-radius:12px;padding:14px 8px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.06);transition:all 0.2s}
         .metric-card:active{transform:scale(0.98)}
         .metric-card .lbl{font-size:11px;color:#718096;margin-bottom:6px;font-weight:500}
         .metric-card .val{font-size:20px;font-weight:700;line-height:1.2}
         .metric-card .sub{font-size:10px;color:#a0aec0;margin-top:4px;line-height:1.3}
-        .mc-blue .val{color:#4f46e5}
-        .mc-green .val{color:#059669}
-        .mc-purple .val{color:#7c3aed}
-        .mc-orange .val{color:#ea580c}
-        .mc-teal .val{color:#0d9488}
-        .mc-indigo .val{color:#4f46e5}
+        .mc-blue .val{color:#DC530F}
+        .mc-indigo .val{color:#DC530F}
+        .mc-purple .val{color:#DC530F}
+        .mc-orange .val{color:#DC530F}
+        .mc-teal .val{color:#DC530F}
 
-        /* verdict卡片 - 更高级 */
         .verdict-box{border-radius:14px;padding:16px 18px;margin:8px 12px;color:white;display:flex;align-items:center;justify-content:space-between;box-shadow:0 4px 16px rgba(0,0,0,0.15)}
         .verdict-left{display:flex;align-items:center;gap:10px}
         .verdict-icon{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;backdrop-filter:blur(4px)}
@@ -77,31 +63,32 @@
         .v-warn{background:linear-gradient(135deg,#f59e0b,#d97706)}
         .v-stop{background:linear-gradient(135deg,#ef4444,#dc2626)}
 
-        /* 导航 */
-        .nav{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,0.98);border-top:1px solid #e2e8f0;display:flex;padding:6px 0;z-index:100;backdrop-filter:blur(10px)}
+        .nav{position:fixed;bottom:0;left:0;right:0;background:#FFFFFF;border-top:1px solid #e2e8f0;display:flex;padding:6px 0;z-index:100}
         .nav-btn{flex:1;text-align:center;font-size:11px;font-weight:600;color:#a0aec0;border:none;background:none;padding:4px 0;transition:all 0.2s}
-        .nav-btn.active{color:#667eea}
+        .nav-btn.active{color:#DC530F}
         .nav-btn .emoji{font-size:18px;display:block;margin-bottom:1px}
 
-        /* 页面 */
         .section{display:none;padding:0 0 12px;min-height:calc(100vh - 70px)}
         .section.active{display:block}
 
-        /* 图表折叠 */
-        .toggle{background:#edf2f7;border:none;padding:10px 14px;border-radius:10px;font-size:13px;font-weight:600;width:calc(100% - 24px);margin:8px 12px;display:flex;justify-content:space-between;align-items:center;color:#4a5568}
-        .chart-box{background:rgba(255,255,255,0.97);border-radius:12px;padding:10px;margin:8px 12px;display:none;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+        .btn-main{background:#DC530F;color:white;border:none;padding:12px;font-size:15px;font-weight:600;border-radius:10px;width:calc(100% - 24px);margin:8px 12px;box-shadow:0 4px 12px rgba(220,83,15,0.3);transition:all 0.2s}
+        .btn-main:active{transform:scale(0.98)}
+        .btn-sub{background:#FFFFFF;border:none;padding:11px;font-size:14px;font-weight:600;border-radius:10px;width:calc(100% - 24px);margin:0 12px;color:#4a5568;transition:all 0.2s;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+        .btn-sub:active{background:#e2e8f0}
+
+        .toggle{background:#FFFFFF;border:none;padding:10px 14px;border-radius:10px;font-size:13px;font-weight:600;width:calc(100% - 24px);margin:8px 12px;display:flex;justify-content:space-between;align-items:center;color:#4a5568;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+        .chart-box{background:#FFFFFF;border-radius:12px;padding:10px;margin:8px 12px;display:none;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
         .chart-box.show{display:block}
 
-        /* 明细表 */
         .detail-table{width:100%;font-size:11px;border-collapse:collapse}
         .detail-table th,.detail-table td{padding:7px 3px;text-align:right;border-bottom:1px solid #edf2f7;white-space:nowrap}
         .detail-table th{background:#f7fafc;font-weight:600;position:sticky;top:0;font-size:10px;color:#4a5568}
         .detail-table td:first-child,.detail-table th:first-child{text-align:left}
         .detail-table td:nth-child(2),.detail-table th:nth-child(2){text-align:left}
-        .scroll-detail{max-height:68vh;overflow-y:auto;border-radius:10px;background:white;margin:0 12px;-webkit-overflow-scrolling:touch}
+        .scroll-detail{max-height:68vh;overflow-y:auto;border-radius:10px;background:#FFFFFF;margin:0 12px;-webkit-overflow-scrolling:touch}
         .scroll-detail::-webkit-scrollbar{height:4px}
         .scroll-detail::-webkit-scrollbar-thumb{background:#c1c1c1;border-radius:2px}
-        .badge{font-size:9px;padding:2px 5px;border-radius:8px;font-weight:600;white-space:nowrap}
+        .badge{font-size:10px;padding:2px 6px;border-radius:10px;font-weight:600;white-space:nowrap}
         .s-装修{background:#fee2e2;color:#991b1b}
         .s-空期{background:#dbeafe;color:#1e40af}
         .s-首年{background:#fef3c7;color:#92400e}
@@ -112,24 +99,20 @@
         .pos{color:#059669;font-weight:600}
         .neg{color:#dc2626;font-weight:600}
 
-        /* 密码页 */
-        .pw-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:linear-gradient(160deg,#5b6bc0 0%,#7c4fd1 50%,#9b59b6 100%);z-index:1000;display:flex;align-items:center;justify-content:center}
-        .pw-box{background:rgba(255,255,255,0.98);border-radius:16px;padding:32px 24px;width:85%;max-width:300px;text-align:center;box-shadow:0 20px 40px rgba(0,0,0,0.2)}
-        .pw-input{width:100%;padding:12px;font-size:18px;text-align:center;letter-spacing:8px;border:2px solid #e2e8f0;border-radius:10px;margin:16px 0 12px;box-sizing:border-box;font-weight:600}
-        .pw-btn{width:100%;padding:12px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:10px;font-size:15px;font-weight:600;box-shadow:0 4px 12px rgba(102,126,234,0.3)}
-        .pw-err{color:#dc2626;font-size:12px;margin-top:8px;display:none;font-weight:500}
-
-        /* 减少整体间距 */
-        .compact-section .panel{margin:6px 12px;padding:12px 14px 8px}
+        .pw-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:#F5F0E8;z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px}
+        .pw-box{background:rgba(255,255,255,0.98);border-radius:16px;padding:24px 20px;width:85%;max-width:280px;text-align:center;box-shadow:0 20px 40px rgba(0,0,0,0.2)}
+        .pw-input{width:100%;padding:12px;font-size:18px;text-align:center;letter-spacing:8px;border:2px solid #DC530F;border-radius:10px;margin:16px 0 12px;box-sizing:border-box;font-weight:600}
+        .pw-btn{width:100%;padding:12px;background:#DC530F;color:white;border:none;border-radius:10px;font-size:15px;font-weight:600;box-shadow:0 4px 12px rgba(220,83,15,0.3)}
+        .pw-err{color:#DC530F;font-size:12px;margin-top:8px;display:none;font-weight:500}
     </style>
 <base target="_blank">
 </head>
 <body>
 <div id="pwOverlay" class="pw-overlay">
+    <div style="text-align:center;margin-bottom:40px">
+        <img src="https://qixiruyu-logo-260502.oss-cn-beijing.aliyuncs.com/屏保.png" style="width:280px;height:auto;object-fit:contain;border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,0.08)" alt="柒禧如寓">
+    </div>
     <div class="pw-box">
-        <div style="font-size:36px;margin-bottom:4px">🏠</div>
-        <div style="font-size:18px;font-weight:700;color:#2d3748">柒禧如寓</div>
-        <div style="font-size:12px;color:#a0aec0;margin-top:4px">收房测算工具</div>
         <input type="password" id="pwInput" class="pw-input" placeholder="输入密码" maxlength="8">
         <button class="pw-btn" onclick="checkPw()">进入系统</button>
         <div id="pwErr" class="pw-err">密码错误，请重试</div>
@@ -138,16 +121,15 @@
 
 <div id="mainBox" style="display:none">
     <div class="header">
-        <div class="brand">🏠 柒禧如寓</div>
-        <div class="sub">收房测算工具</div>
+        <div style="display:flex;align-items:center;justify-content:center;padding:8px 0">
+            <img src="https://qixiruyu-logo-260502.oss-cn-beijing.aliyuncs.com/logo哼.png" style="height:44px;width:auto;object-fit:contain" alt="柒禧如寓">
+        </div>
     </div>
 
-    <!-- 测算页（输入+结果合并） -->
     <div id="sec-main" class="section active compact-section">
-        <!-- 输入区域 -->
         <div class="panel">
             <div class="panel-title">
-                <span class="icon" style="background:#e0e7ff;color:#4f46e5">⚙️</span>
+                <span class="icon">⚙</span>
                 基础参数
             </div>
             <div class="input-wrap"><label>获客成本 (元)</label><input type="number" id="acquire" value="2000"></div>
@@ -168,7 +150,7 @@
         </div>
         <div class="panel">
             <div class="panel-title">
-                <span class="icon" style="background:#d1fae5;color:#059669">💰</span>
+                <span class="icon">💰</span>
                 房间租金
             </div>
             <div class="input-wrap">
@@ -178,9 +160,8 @@
             <div id="roomBox" class="room-list"></div>
         </div>
 
-        <!-- 结果区域 -->
         <div class="metric-grid3">
-            <div class="metric-card mc-blue">
+            <div class="metric-card mc-blue" style="display:none">
                 <div class="lbl">总投入</div>
                 <div class="val" id="m1">-</div>
                 <div class="sub">装修+获客+房东</div>
@@ -190,7 +171,7 @@
                 <div class="val" id="m2">-</div>
                 <div class="sub">房间租金×月数</div>
             </div>
-            <div class="metric-card mc-green">
+            <div class="metric-card mc-green" style="display:none">
                 <div class="lbl">合同总利润</div>
                 <div class="val" id="m3">-</div>
                 <div class="sub">收入-支出</div>
@@ -234,15 +215,10 @@
         <div id="chartBox" class="chart-box"><div style="height:200px"><canvas id="chart"></canvas></div></div>
     </div>
 
-    <!-- 结果页占位（已合并到main，保留空div避免JS报错） -->
-    <div id="sec-result" class="section" style="display:none">
-    </div>
-
-    <!-- 明细页 -->
-    <div id="sec-detail" class="section" style="padding-top:20px">
+    <div id="sec-detail" class="section" style="padding-top:20px;display:none">
         <div class="panel" style="padding:10px 12px;margin:8px 12px">
             <div class="panel-title">
-                <span class="icon" style="background:#dbeafe;color:#1e40af">📋</span>
+                <span class="icon">📋</span>
                 现金流明细
             </div>
         </div>
@@ -251,7 +227,7 @@
                 <thead><tr><th>阶段</th><th>月</th><th>装修</th><th>获客</th><th>房东</th><th>租客</th><th>净流</th><th>累计</th></tr></thead>
                 <tbody id="tb"></tbody>
                 <tfoot style="background:#f7fafc;font-weight:600">
-                    <tr><td colspan="2" style="text-align:right">合计</td><td id="s1" class="neg">-</td><td id="s2" class="neg">-</td><td id="s3" class="neg">-</td><td id="s4" class="pos">-</td><td id="s6" style="color:#4f46e5">-</td><td id="s7" style="color:#3b82f6">-</td></tr>
+                    <tr><td colspan="2" style="text-align:right">合计</td><td id="s1" class="neg">-</td><td id="s2" class="neg">-</td><td id="s3" class="neg">-</td><td id="s4" class="pos">-</td><td id="s6" style="color:#DC530F">-</td><td id="s7" style="color:#DC530F">-</td></tr>
                 </tfoot>
             </table>
         </div>
@@ -261,14 +237,10 @@
         <button class="nav-btn active" onclick="show('main')">
             <span class="emoji">🏠</span>测算
         </button>
-        <button class="nav-btn" onclick="show('detail')">
-            <span class="emoji">📋</span>明细
-        </button>
     </div>
 </div>
 
 <script>
-// ========== 所有数据公式逻辑完全不动，已最终定稿 ==========
 const CORRECT_PASSWORD = 'qxry888';
 const DEFAULT_RENTS = [1200, 1000, 1000, 1000, 1000, 1000, 1000, 1000];
 let chart = null;
@@ -294,7 +266,7 @@ function show(id){
     document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
     document.getElementById('sec-'+id).classList.add('active');
     const navBtns = document.querySelectorAll('.nav-btn');
-    const idx = ['main','detail'].indexOf(id);
+    const idx = ['main'].indexOf(id);
     if(idx >= 0) navBtns[idx].classList.add('active');
     if(chart) chart.resize();
 }
@@ -472,7 +444,7 @@ function drawChart(cf){
         data: {
             labels: lab,
             datasets: [
-                {label: '累计现金流', data: cum, borderColor: '#667eea', backgroundColor: 'rgba(102,126,234,0.1)', fill: true, tension: 0.3, pointRadius: (ctx) => { const i=ctx.dataIndex; return i===0||i===recoverIndex||i===cf.length-1?5:0; }, pointHoverRadius: 6, pointBackgroundColor: (ctx) => { const i=ctx.dataIndex; if(i===0)return'#ef4444'; if(i===recoverIndex)return'#10b981'; return'#667eea'; }},
+                {label: '累计现金流', data: cum, borderColor: '#DC530F', backgroundColor: 'rgba(220,83,15,0.1)', fill: true, tension: 0.3, pointRadius: (ctx) => { const i=ctx.dataIndex; return i===0||i===recoverIndex||i===cf.length-1?5:0; }, pointHoverRadius: 6, pointBackgroundColor: (ctx) => { const i=ctx.dataIndex; if(i===0)return'#ef4444'; if(i===recoverIndex)return'#10b981'; return'#DC530F'; }},
                 {label: '当月净流', data: net, borderColor: '#10b981', backgroundColor: 'transparent', fill: false, tension: 0.1, pointRadius: 0, pointHoverRadius: 3, borderWidth: 2, borderDash: [5, 5], yAxisID: 'y1'}
             ]
         },
@@ -481,7 +453,7 @@ function drawChart(cf){
             plugins: {legend: {display: true, labels: {usePointStyle: true, font: {size: 11}}}},
             scales: {
                 x: {grid: {display: false}, ticks: {maxTicksLimit: 8, font: {size: 10}}},
-                y: {position: 'left', ticks: {callback: v => '¥' + (v / 10000).toFixed(1) + '万', font: {size: 10}}, grid: {color: 'rgba(102,126,234,0.1)'}},
+                y: {position: 'left', ticks: {callback: v => '¥' + (v / 10000).toFixed(1) + '万', font: {size: 10}}, grid: {color: 'rgba(220,83,15,0.1)'}},
                 y1: {position: 'right', ticks: {callback: v => '¥' + (v / 1000).toFixed(0) + 'k', font: {size: 10}}, grid: {drawOnChartArea: false}}
             }
         }
